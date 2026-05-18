@@ -1,0 +1,45 @@
+[project]
+name = "fools"
+version = "0.1.0"
+description = "Collection of fun tools"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.39.5",
+    "debugpy>=1.8.20",
+    "mypy>=2.1.0",
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fools/"]
+
+[tool.mypy]
+strict = true
+disallow_untyped_globals = true
+strict_optional = true
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+extend-select = [
+    "I001",  # isort incorrect formatting
+    "I002",  # isort missing required import
+    "E501",  # add line-too-long rule
+    "D",     # enable docstring enforcement
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"__init__.py" = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
