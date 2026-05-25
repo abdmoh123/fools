@@ -28,6 +28,7 @@ disallow_untyped_globals = true
 strict_optional = true
 
 [tool.ruff]
+src = ["fools"]
 line-length = 80
 
 [tool.ruff.lint]

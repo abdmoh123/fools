@@ -36,8 +36,8 @@ def calc_compound_result(
     for _ in range(years):
         for __ in range(12):
             current_value = (
-                (current_value + monthly_contribution) * percent_multiplier
-            )
+                current_value + monthly_contribution
+            ) * percent_multiplier
     return current_value
 
 
@@ -69,7 +69,7 @@ def calc_monthly_target(
 
     years_effect = Decimal(0)
     for i in range(years):
-        years_effect += compounding_rate ** i
+        years_effect += compounding_rate**i
 
     return ((constant - inital_value_effect) / years_effect) / 12
 
