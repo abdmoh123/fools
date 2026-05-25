@@ -1,12 +1,14 @@
 """Calculators relating to finance."""
 
+from decimal import Decimal
+
 
 def calc_compound_result(
-    initial_value: float,
-    percent_rate: float,
+    initial_value: Decimal,
+    percent_rate: Decimal,
     years: int,
-    monthly_contribution: float = 0,
-) -> float:
+    monthly_contribution: Decimal | None = None,
+) -> Decimal:
     """Calculate the compound result of an investment.
 
     Args:
@@ -18,6 +20,9 @@ def calc_compound_result(
     Returns:
         The compound result of the investment
     """
+    if monthly_contribution is None:
+        monthly_contribution = Decimal(0)
+
     # Quick and fast calculation if no monthly deposits are made
     if monthly_contribution == 0:
         return initial_value * (1 + percent_rate) ** years
@@ -34,11 +39,11 @@ def calc_compound_result(
 
 
 def calc_monthly_target(
-    desired_target: float,
-    percent_rate: float,
+    desired_target: Decimal,
+    percent_rate: Decimal,
     years: int,
-    initial_value: float = 0,
-) -> float:
+    initial_value: Decimal | None = None,
+) -> Decimal:
     """Calculate how much you need to pay monthly to reach a desired target.
 
     Args:
@@ -49,27 +54,28 @@ def calc_monthly_target(
     Returns:
         The amount of money to pay per month in order to reach the desired value
     """
+    if initial_value is None:
+        initial_value = Decimal(0)
+
     if initial_value > desired_target:
-        return 0
+        return Decimal(0)
 
     compounding_rate = 1 + percent_rate
-    constant: float = desired_target / (compounding_rate)
-    inital_value_effect: float = initial_value * (compounding_rate) ** (
-        years - 1
-    )
+    constant = desired_target / (compounding_rate)
+    inital_value_effect = initial_value * (compounding_rate) ** (years - 1)
 
-    years_effect: float = 0
+    years_effect = Decimal(0)
     for i in range(years):
-        years_effect += compounding_rate**i
+        years_effect += compounding_rate ** i
 
     return ((constant - inital_value_effect) / years_effect) / 12
 
 
 def calc_investment_time(
-    desired_value: float,
-    percent_rate: float,
-    initial_value: float,
-    monthly_contribution: float = 0,
+    desired_value: Decimal,
+    percent_rate: Decimal,
+    initial_value: Decimal,
+    monthly_contribution: Decimal | None = None,
 ) -> int:
     """Calculate how long to reach a desired target.
 
@@ -82,8 +88,11 @@ def calc_investment_time(
     Returns:
         The number of years to reach the desired value
     """
+    if monthly_contribution is None:
+        monthly_contribution = Decimal(0)
+
     years: int = 0
-    current_value: float = initial_value
+    current_value = initial_value
     while current_value < desired_value:
         current_value = calc_compound_result(
             initial_value,
@@ -96,7 +105,9 @@ def calc_investment_time(
     return years
 
 
-def deflate_value(value: float, inflation_rate: float, years: int) -> float:
+def deflate_value(
+    value: Decimal, inflation_rate: Decimal, years: int
+) -> Decimal:
     """Reverses compound interest to give the value of money in the past.
 
     Useful for calculating how your invested money in the future will be worth
