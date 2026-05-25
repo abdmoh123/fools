@@ -27,14 +27,17 @@ def calc_compound_result(
     if monthly_contribution == 0:
         return initial_value * (1 + percent_rate) ** years
 
+    percent_multiplier: Decimal = (1 + percent_rate) ** (
+        Decimal(1) / Decimal(12)
+    )
+
     # The nested loop gives a more granular and accurate result
     current_value = initial_value
     for _ in range(years):
         for __ in range(12):
-            current_value = (current_value + monthly_contribution) * (
-                1 + (percent_rate / 12)
+            current_value = (
+                (current_value + monthly_contribution) * percent_multiplier
             )
-
     return current_value
 
 
