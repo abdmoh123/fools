@@ -1,0 +1,51 @@
+"""Tests for the finance.calculator module."""
+
+from decimal import Decimal
+
+import pytest
+from fools.finance import calculator
+
+
+def test_calc_compound_result_no_monthly() -> None:
+    """Test case for a compound result with no monthly contribution."""
+    init_value = Decimal(100)
+    percent_rate = Decimal(0.05)
+    years = 3
+
+    result = Decimal(115.7625)
+
+    assert result == pytest.approx(  # pyright: ignore[reportUnknownMemberType]
+        calculator.calc_compound_result(init_value, percent_rate, years)
+    )
+
+
+def test_calc_compound_result_with_monthly() -> None:
+    """Test case for a compound result with a regular monthly contribution."""
+    init_value = Decimal(100)
+    percent_rate = Decimal(0.05)
+    years = 3
+    monthly_contribution = Decimal(10)
+
+    result = Decimal(502.6555)
+
+    assert result == pytest.approx(  # pyright: ignore[reportUnknownMemberType]
+        calculator.calc_compound_result(
+            init_value, percent_rate, years, monthly_contribution
+        )
+    )
+
+
+def test_calc_monthly_target() -> None:
+    """Test how much per month to reach 100k in 10 years."""
+    desired_target = Decimal(100000)
+    percent_rate = Decimal(0.1)
+    years = 10
+
+    # expected_result = Decimal(475.3439)
+    monthly_result = calculator.calc_monthly_target(
+        desired_target, percent_rate, years
+    )
+    compound_result = calculator.calc_compound_result(
+        Decimal(0), percent_rate, years, monthly_result
+    )
+    assert desired_target == pytest.approx(compound_result)  # pyright: ignore[reportUnknownMemberType]
