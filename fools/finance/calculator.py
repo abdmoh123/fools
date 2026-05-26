@@ -63,15 +63,14 @@ def calc_monthly_target(
     if initial_value > desired_target:
         return Decimal(0)
 
-    compounding_rate = 1 + percent_rate
-    constant = desired_target / (compounding_rate)
-    inital_value_effect = initial_value * (compounding_rate) ** (years - 1)
+    monthly_multiplier = (1 + percent_rate) ** (Decimal(1) / Decimal(12))
 
-    years_effect = Decimal(0)
-    for i in range(years):
-        years_effect += compounding_rate**i
-
-    return ((constant - inital_value_effect) / years_effect) / 12
+    growth_factor = monthly_multiplier ** (years * 12)
+    result_without_contributions = initial_value * growth_factor
+    difference = desired_target - result_without_contributions
+    if difference <= 0:
+        return Decimal(0)
+    return difference * (monthly_multiplier - 1) / (growth_factor - 1)
 
 
 def calc_investment_time(
