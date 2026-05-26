@@ -36,8 +36,8 @@ def calc_compound_result(
     for _ in range(years):
         for __ in range(12):
             current_value = (
-                current_value + monthly_contribution
-            ) * percent_multiplier
+                current_value * percent_multiplier + monthly_contribution
+            )
     return current_value
 
 
