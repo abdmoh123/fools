@@ -51,6 +51,28 @@ def test_calc_monthly_target() -> None:
     assert desired_target == pytest.approx(compound_result)  # pyright: ignore[reportUnknownMemberType]
 
 
+def test_calc_investment_time() -> None:
+    """Test how long to invest for to reach a desired value."""
+    desired_value = Decimal(100000)
+    percent_rate = Decimal(0.1)
+    initial_value = Decimal(0)
+    monthly_contribution = Decimal(1000)
+
+    years = calculator.calc_investment_time(
+        desired_value, percent_rate, initial_value, monthly_contribution
+    )
+    compound_result = calculator.calc_compound_result(
+        initial_value, percent_rate, years, monthly_contribution
+    )
+    compound_result_before = calculator.calc_compound_result(
+        initial_value, percent_rate, years - 1, monthly_contribution
+    )
+    assert (
+        compound_result >= desired_value
+        and compound_result_before < desired_value
+    )
+
+
 def test_deflate_value() -> None:
     """Test how much currency is worth in the past."""
     value = Decimal(100)
