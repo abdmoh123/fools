@@ -49,3 +49,17 @@ def test_calc_monthly_target() -> None:
         Decimal(0), percent_rate, years, monthly_result
     )
     assert desired_target == pytest.approx(compound_result)  # pyright: ignore[reportUnknownMemberType]
+
+
+def test_deflate_value() -> None:
+    """Test how much currency is worth in the past."""
+    value = Decimal(100)
+    inflation_rate = Decimal(0.1)
+    years = 10
+
+    actual_value = Decimal(38.5543)
+    result = calculator.deflate_value(value, inflation_rate, years)
+
+    assert actual_value == pytest.approx(result)  # pyright: ignore[reportUnknownMemberType]
+    # Check if function is reversible
+    assert result * (1 + inflation_rate) ** years == pytest.approx(value)  # pyright: ignore[reportUnknownMemberType]
