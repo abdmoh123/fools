@@ -93,16 +93,16 @@ def calc_investment_time(
     if monthly_contribution is None:
         monthly_contribution = Decimal(0)
 
-    years: int = 0
+    years: int = -1
     current_value = initial_value
     while current_value < desired_value:
+        years += 1
         current_value = calc_compound_result(
             initial_value,
             percent_rate,
-            years=1,
+            years,
             monthly_contribution=monthly_contribution,
         )
-        years += 1
 
     return years
 
