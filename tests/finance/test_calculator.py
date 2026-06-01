@@ -85,3 +85,31 @@ def test_deflate_value() -> None:
     assert actual_value == pytest.approx(result)  # pyright: ignore[reportUnknownMemberType]
     # Check if function is reversible
     assert result * (1 + inflation_rate) ** years == pytest.approx(value)  # pyright: ignore[reportUnknownMemberType]
+
+
+def test_calc_debt_payoff_years() -> None:
+    """Test how long it takes to pay off debt."""
+    initial_debt = Decimal(40000)
+    inflation_rate = Decimal(0.09)
+    monthly_payment = Decimal(1000)
+
+    expected_years = 4
+    actual_years = calculator.calc_debt_payoff_years(
+        initial_debt, inflation_rate, monthly_payment
+    )
+
+    assert expected_years == pytest.approx(actual_years)  # pyright: ignore[reportUnknownMemberType]
+
+
+def test_calc_debt_monthly_payments() -> None:
+    """Test how much monthly payment is required to pay off debt."""
+    initial_debt = Decimal(40000)
+    inflation_rate = Decimal(0.09)
+    years = 4
+
+    expected_payments = Decimal(988.7444)
+    actual_payments = calculator.calc_debt_monthly_payments(
+        initial_debt, inflation_rate, years
+    )
+
+    assert expected_payments == pytest.approx(actual_payments)  # pyright: ignore[reportUnknownMemberType]
