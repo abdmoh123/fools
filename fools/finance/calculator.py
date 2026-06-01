@@ -124,3 +124,64 @@ def deflate_value(
         The deflated value
     """
     return value / (1 + inflation_rate) ** years
+
+
+def calc_debt_payoff_years(
+    initial_debt: Decimal, inflation_rate: Decimal, monthly_payment: Decimal
+) -> Decimal:
+    """Calculate how many years it will take to pay off a debt.
+
+    Args:
+        initial_debt: The initial debt value
+        inflation_rate: The yearly interest rate of the debt (e.g. 0.05 for 5%)
+        monthly_payment: The monthly payment amount
+
+    Returns:
+        The number of years to pay off the debt (rounded up), can return
+        infinity if the monthly payment is not enough
+    """
+    # Check if the monthly payment is enough to even pay off the debt
+    monthly_rate = (1 + inflation_rate) ** (Decimal(1) / Decimal(12)) - 1
+    if monthly_payment <= initial_debt * monthly_rate:
+        return Decimal("inf")
+
+    years = 0
+    current_debt = initial_debt
+    while current_debt > 0:
+        years += 1
+        current_debt = calc_compound_result(
+            initial_debt,
+            inflation_rate,
+            years,
+            monthly_contribution=-monthly_payment,
+        )
+
+    return Decimal(years)
+
+
+def calc_debt_monthly_payments(
+    initial_debt: Decimal, inflation_rate: Decimal, years: int
+) -> Decimal:
+    """Calculate monthly payment required to pay off debt.
+
+    Given an initial debt, a yearly inflation rate and the number of years to
+    pay off the debt.
+
+    Args:
+        initial_debt: The initial debt value
+        inflation_rate: The yearly interest rate of the debt (e.g. 0.05 for 5%)
+        years: The number of years to pay off the debt
+
+    Returns:
+        The monthly payment needed to pay off the debt
+    """
+    monthly_multiplier = (1 + inflation_rate) ** (Decimal(1) / Decimal(12))
+    growth_factor = monthly_multiplier ** (years * 12)
+
+    # Standard amortisation formula
+    return (
+        initial_debt
+        * (monthly_multiplier - 1)
+        * growth_factor
+        / (growth_factor - 1)
+    )
