@@ -17,6 +17,9 @@ dev = [
     "ruff>=0.15.13",
 ]
 
+[project.scripts]
+fools = "fools.main:app"
+
 [build-system]
 requires = ["uv_build>=0.11.26,<0.12"]
 build-backend = "uv_build"
