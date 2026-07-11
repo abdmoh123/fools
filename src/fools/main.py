@@ -2,17 +2,11 @@
 
 import typer
 
+import fools.finance.commands as finance_commands
+
 app = typer.Typer()
 
-
-@app.command()
-def main(name: str) -> None:
-    """Main command.
-
-    Args:
-        name: The name to say hello to.
-    """
-    print(f"Hello, {name}")
+app.add_typer(finance_commands.app, name="finance")
 
 
 if __name__ == "__main__":
